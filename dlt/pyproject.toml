@@ -5,5 +5,5 @@ description = "TODO"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "dlt[filesystem]>=1.30.0",
+    "dlt[filesystem,parquet]>=1.30.0",
 ]
