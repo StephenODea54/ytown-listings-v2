@@ -1,0 +1,17 @@
+name: ytown_listings
+version: "0.1.0"
+profile: ytown_listings
+
+model-paths: ["models"]
+macro-paths: ["macros"]
+
+clean-targets:
+  - target
+  - dbt_packages
+
+models:
+  ytown_listings:
+    +database: lake
+    raw:
+      +schema: raw
+      +materialized: table

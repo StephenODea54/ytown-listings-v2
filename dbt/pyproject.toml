@@ -1,0 +1,15 @@
+[project]
+name = "ytown-listings-dbt"
+version = "0.1.0"
+description = "TODO"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "dbt-core>=1.12.5",
+    "dbt-duckdb>=1.11.0",
+]
+
+[dependency-groups]
+dev = [
+    "duckdb-cli==1.5.5",
+]

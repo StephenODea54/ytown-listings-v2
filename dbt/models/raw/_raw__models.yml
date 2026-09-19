@@ -1,0 +1,11 @@
+version: 2
+
+models:
+  - name: sale_listings
+    description: Unmodified copy of the landing sale listings
+    columns:
+      - name: _dlt_id
+        description: Row identifier assigned by dlt.
+        data_tests:
+          - not_null
+          - unique

@@ -1,0 +1,25 @@
+ytown_listings:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: ":memory:"
+      threads: 4
+      schema: main
+      extensions:
+        - httpfs
+        - ducklake
+        - postgres
+      secrets:
+        - type: s3
+          key_id: "{{ env_var('RUSTFS_ACCESS_KEY') }}"
+          secret: "{{ env_var('RUSTFS_SECRET_KEY') }}"
+          endpoint: "{{ env_var('RUSTFS_ENDPOINT') }}"
+          url_style: path
+          use_ssl: false
+      attach:
+        - path: "ducklake:postgres:host={{ env_var('DUCKLAKE_CATALOG_HOST') }} port={{ env_var('DUCKLAKE_CATALOG_PORT') }} dbname={{ env_var('DUCKLAKE_CATALOG_DB') }} user={{ env_var('DUCKLAKE_CATALOG_USER') }} password={{ env_var('DUCKLAKE_CATALOG_PASSWORD') }}"
+          alias: lake
+          is_ducklake: true
+          options:
+            data_path: "s3://ytown-listings/lakehouse/"

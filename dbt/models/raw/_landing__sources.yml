@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: landing
+    description: Parquet files written to rustfs by the dlt rentcast pipeline.
+    meta:
+      external_location: "s3://ytown-listings/landing/{name}/*.parquet"
+    tables:
+      - name: sale_listings
+        description: Raw (append only) results from https://api.rentcast.io/v1/listings/sale
