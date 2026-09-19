@@ -12,6 +12,9 @@
 *coverage
 *build
 *dist
+target/
+logs/
+dbt_packages/
 
 # And permit certain files
 !.dockerignore
@@ -25,10 +28,13 @@
 # And filetypes
 !*.md
 !*.py
+!*.sql
 !*.toml
 !*.yaml
+!*.yml
 
-# But never secrets or dlt local state
+# But never secrets or local tool state
+.user.yml
 secrets.toml
 *.secrets.toml
 .dlt/profile-name
