@@ -17,9 +17,20 @@
 !.dockerignore
 !.env.example
 !.gitignore
+!.python-version
 !Dockerfile
 !LICENSE
+!uv.lock
 
 # And filetypes
 !*.md
+!*.py
+!*.toml
 !*.yaml
+
+# But never secrets or dlt local state
+secrets.toml
+*.secrets.toml
+.dlt/profile-name
+.dlt/state/
+.dlt/data/
