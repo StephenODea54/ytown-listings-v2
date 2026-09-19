@@ -1,0 +1,22 @@
+services:
+  rustfs:
+    build:
+      context: ./rustfs
+      dockerfile: Dockerfile
+
+    container_name: rustfs
+    restart: unless-stopped
+
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+
+    environment:
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY}
+
+    volumes:
+      - rustfs-data:/data
+
+volumes:
+  rustfs-data:
