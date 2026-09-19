@@ -18,5 +18,28 @@ services:
     volumes:
       - rustfs-data:/data
 
+  ducklake-catalog:
+    image: postgres:17
+    container_name: ducklake-catalog
+    restart: unless-stopped
+
+    ports:
+      - "5436:5432"
+
+    environment:
+      POSTGRES_USER: ${DUCKLAKE_CATALOG_USER}
+      POSTGRES_PASSWORD: ${DUCKLAKE_CATALOG_PASSWORD}
+      POSTGRES_DB: ${DUCKLAKE_CATALOG_DB}
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DUCKLAKE_CATALOG_USER} -d ${DUCKLAKE_CATALOG_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+    volumes:
+      - ducklake-catalog-data:/var/lib/postgresql/data
+
 volumes:
   rustfs-data:
+  ducklake-catalog-data:
