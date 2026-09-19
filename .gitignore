@@ -1,0 +1,25 @@
+# Ignore everything
+*
+
+# But descend into directories
+!*/
+
+# but still exclude generated folders
+*.egg-info/
+*.ipynb_checkpoints/
+*.pnp
+*.venv
+*coverage
+*build
+*dist
+
+# And permit certain files
+!.dockerignore
+!.env.example
+!.gitignore
+!Dockerfile
+!LICENSE
+
+# And filetypes
+!*.md
+!*.yaml
