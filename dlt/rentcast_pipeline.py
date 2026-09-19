@@ -1,5 +1,6 @@
 from typing import Any
 
+from dlt.sources.helpers.rest_client.paginators import OffsetPaginator
 from dlt.sources.rest_api import EndpointResource, RESTAPIConfig, rest_api_resources
 
 import dlt
@@ -7,6 +8,13 @@ import dlt
 RENTCAST_BASE_URL = "https://api.rentcast.io/v1/"
 MAX_PAGE_SIZE = 500
 LISTINGS_TABLE = "sale_listings"
+
+
+class ShortPagePaginator(OffsetPaginator):
+    """Stops on the first page shorter than the page size."""
+
+    def _stop_after_this_page(self, data: list[Any] | None = None) -> bool:
+        return not data or len(data) < self.limit
 
 
 def build_county_resource(
@@ -44,6 +52,7 @@ def rentcast_source(
     property_type: str = dlt.config.value,
     status: str = dlt.config.value,
     price: str = dlt.config.value,
+    max_listings_per_area: int = dlt.config.value,
 ) -> Any:
     config: RESTAPIConfig = {
         "client": {
@@ -54,15 +63,12 @@ def rentcast_source(
                 "api_key": api_key,
                 "location": "header",
             },
-            "paginator": {
-                "type": "offset",
-                "limit": MAX_PAGE_SIZE,
-                "offset_param": "offset",
-                "limit_param": "limit",
+            "paginator": ShortPagePaginator(
+                limit=MAX_PAGE_SIZE,
                 # RentCast returns a bare array with no total count
-                "total_path": None,
-                "stop_after_empty_page": True,
-            },
+                total_path=None,
+                maximum_offset=max_listings_per_area,
+            ),
         },
         "resource_defaults": {
             "write_disposition": "append",
