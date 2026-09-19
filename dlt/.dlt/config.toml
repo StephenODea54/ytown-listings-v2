@@ -6,6 +6,8 @@ dlthub_telemetry = true
 property_type = "Single Family"
 status = "Active"
 price = "25000:"
+request_budget = 25
+max_listings_per_area = 3000
 
 [[sources.rentcast.counties]]
 name = "Trumbull"
