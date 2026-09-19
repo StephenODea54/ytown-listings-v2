@@ -1,7 +1,34 @@
-# put your configuration values here
-
 [runtime]
-log_level="WARNING"  # the system log level of dlt
-# use the dlthub_telemetry setting to enable/disable anonymous usage data reporting, see https://dlthub.com/docs/reference/telemetry
+log_level = "WARNING"
 dlthub_telemetry = true
 
+[sources.rentcast]
+property_type = "Single Family"
+status = "Active"
+price = "25000:"
+
+[[sources.rentcast.counties]]
+name = "Trumbull"
+latitude = 41.21
+longitude = -80.76
+radius = 16
+
+[[sources.rentcast.counties]]
+name = "Mahoning"
+latitude = 41.04
+longitude = -80.74
+radius = 15
+
+[[sources.rentcast.counties]]
+name = "Columbiana"
+latitude = 40.78
+longitude = -80.76
+radius = 18
+
+[destination.filesystem]
+bucket_url = "s3://ytown-listings"
+layout = "{table_name}/{YYYY}{MM}{DD}T{HH}{mm}{ss}.{file_id}.{ext}"
+
+[destination.filesystem.credentials]
+endpoint_url = "http://localhost:9000"
+region_name = "us-east-1"
