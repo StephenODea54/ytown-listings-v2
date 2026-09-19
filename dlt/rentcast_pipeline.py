@@ -2,12 +2,34 @@ from typing import Any
 
 from dlt.sources.helpers.rest_client.paginators import OffsetPaginator
 from dlt.sources.rest_api import EndpointResource, RESTAPIConfig, rest_api_resources
+from requests import PreparedRequest, Response, Session
 
 import dlt
 
 RENTCAST_BASE_URL = "https://api.rentcast.io/v1/"
 MAX_PAGE_SIZE = 500
 LISTINGS_TABLE = "sale_listings"
+
+
+class RequestBudgetExceeded(Exception):
+    pass
+
+
+class BudgetedSession(Session):
+    """Refuses to send more than `budget` requests."""
+
+    def __init__(self, budget: int) -> None:
+        super().__init__()
+        self.budget = budget
+        self.request_count = 0
+
+    def send(self, request: PreparedRequest, **kwargs: Any) -> Response:
+        if self.request_count >= self.budget:
+            raise RequestBudgetExceeded(
+                f"refusing to exceed the budget of {self.budget} RentCast requests"
+            )
+        self.request_count += 1
+        return super().send(request, **kwargs)
 
 
 class ShortPagePaginator(OffsetPaginator):
@@ -47,6 +69,7 @@ def build_county_resource(
 
 @dlt.source(name="rentcast", section="rentcast")
 def rentcast_source(
+    session: Session,
     api_key: str = dlt.secrets.value,
     counties: list[dict[str, Any]] = dlt.config.value,
     property_type: str = dlt.config.value,
@@ -63,6 +86,7 @@ def rentcast_source(
                 "api_key": api_key,
                 "location": "header",
             },
+            "session": session,
             "paginator": ShortPagePaginator(
                 limit=MAX_PAGE_SIZE,
                 # RentCast returns a bare array with no total count
@@ -84,14 +108,20 @@ def rentcast_source(
 
 
 def load_sale_listings() -> None:
+    session = BudgetedSession(dlt.config["sources.rentcast.request_budget"])
     pipeline = dlt.pipeline(
         pipeline_name="rentcast",
         destination="filesystem",
         dataset_name="landing",
     )
 
-    load_info = pipeline.run(rentcast_source(), loader_file_format="parquet")
-    print(load_info)
+    try:
+        load_info = pipeline.run(
+            rentcast_source(session=session), loader_file_format="parquet"
+        )
+        print(load_info)
+    finally:
+        print(f"RentCast requests used this run: {session.request_count}")
 
 
 if __name__ == "__main__":
