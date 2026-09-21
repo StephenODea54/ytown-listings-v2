@@ -1,0 +1,62 @@
+version: 2
+
+models:
+  - name: dim_date
+    columns:
+      - name: date_key
+        data_tests:
+          - unique
+          - not_null
+
+  - name: fct_listing_snapshot
+    description: >
+      Periodic snapshot fact. One row per listing per pipeline load, joined to the
+      dimension versions that were valid at load time.
+    columns:
+      - name: listing_key
+        data_tests:
+          - not_null
+      - name: property_sk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_property')
+                field: property_sk
+      - name: agent_sk
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_agent')
+                field: agent_sk
+      - name: office_sk
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_office')
+                field: office_sk
+      - name: loaded_date_key
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('dim_date')
+                field: date_key
+
+  - name: fct_listing_lifecycle
+    description: >
+      Accumulating snapshot fact with one row per listing, updated every build with the
+      milestones observed so far. is_active means the listing appeared in the most
+      recent load, since the pipeline only ever requests active listings and a listing
+      that stops arriving has left the market.
+    columns:
+      - name: listing_key
+        data_tests:
+          - unique
+          - not_null
+      - name: property_sk
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_property')
+                field: property_sk
