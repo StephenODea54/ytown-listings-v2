@@ -4,7 +4,7 @@ ytown_listings:
     dev:
       type: duckdb
       path: ":memory:"
-      threads: 4
+      threads: 1
       schema: main
       extensions:
         - httpfs
