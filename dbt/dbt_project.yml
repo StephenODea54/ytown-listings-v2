@@ -3,7 +3,9 @@ version: "0.1.0"
 profile: ytown_listings
 
 model-paths: ["models"]
+snapshot-paths: ["snapshots"]
 macro-paths: ["macros"]
+test-paths: ["tests"]
 
 clean-targets:
   - target
@@ -12,6 +14,15 @@ clean-targets:
 models:
   ytown_listings:
     +database: lake
+    +materialized: table
     raw:
       +schema: raw
-      +materialized: table
+    staging:
+      +schema: stg
+    marts:
+      +schema: marts
+
+snapshots:
+  ytown_listings:
+    +database: lake
+    +schema: marts
