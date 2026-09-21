@@ -1,0 +1,49 @@
+version: 2
+
+models:
+  - name: stg_sale_listings
+    description: >
+      One row per listing per pipeline load, restricted to Mahoning, Trumbull and
+      Columbiana counties in Ohio. Overlapping search radii return the same listing
+      several times per load, so this model keeps one copy per load and leaves picking
+      the latest load to the marts.
+    columns:
+      - name: listing_key
+        description: md5 of mls_name and mls_number. RentCast's own id is a slug of the address and changes when the address rendering does.
+        data_tests:
+          - not_null
+      - name: property_key
+        description: md5 of the upper-cased formatted address. Survives relisting under a new MLS number.
+        data_tests:
+          - not_null
+      - name: load_id
+        data_tests:
+          - not_null
+      - name: listing_status
+        description: The pipeline requests status=Active only, so this is constant today. The test fails the day that changes.
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ['Active']
+      - name: price
+        data_tests:
+          - not_null
+
+  - name: stg_listing_events
+    description: >
+      One row per listing period, unnested from the history object RentCast attaches
+      to each current listing, reaching back years before the pipeline first ran. It
+      records only the price events RentCast chose to log for properties listed right
+      now, so it is survivorship-biased and is not a substitute for a slowly changing
+      dimension.
+    columns:
+      - name: listing_key
+        data_tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_sale_listings')
+                field: listing_key
+      - name: event_date
+        data_tests:
+          - not_null
