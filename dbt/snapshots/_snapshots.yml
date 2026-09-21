@@ -1,0 +1,30 @@
+version: 2
+
+snapshots:
+  - name: dim_property
+    description: >
+      Type 2 dimension of physical properties, keyed on address and versioned when a
+      physical attribute changes. A property is not invalidated when its listing
+      disappears, since whether it is on the market is the facts' concern.
+    columns:
+      - name: property_sk
+        data_tests:
+          - unique
+          - not_null
+      - name: property_key
+        data_tests:
+          - not_null
+
+  - name: dim_agent
+    columns:
+      - name: agent_sk
+        data_tests:
+          - unique
+          - not_null
+
+  - name: dim_office
+    columns:
+      - name: office_sk
+        data_tests:
+          - unique
+          - not_null
