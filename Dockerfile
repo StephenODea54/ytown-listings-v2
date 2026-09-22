@@ -20,3 +20,7 @@ COPY pyproject.toml .
 COPY uv.lock .
 
 RUN make build
+
+EXPOSE 3001
+
+CMD ["make", "serve"]
