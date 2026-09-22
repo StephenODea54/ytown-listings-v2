@@ -20,9 +20,11 @@ dbt_packages/
 !.dockerignore
 !.env.example
 !.gitignore
+!.npmrc
 !.python-version
 !Dockerfile
 !LICENSE
+!package.json
 !uv.lock
 
 # And filetypes
