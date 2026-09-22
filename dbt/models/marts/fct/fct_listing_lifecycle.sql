@@ -34,6 +34,7 @@ events as (
         listing_key,
         count(*)                                                       as times_listed,
         max(removed_date) filter (where removed_date is not null)      as previous_removed_at,
+        arg_max(price, removed_date) filter (where removed_date is not null) as previous_listing_price,
         min(listed_date)  filter (where removed_date is null)          as current_listed_at
     from {{ ref('stg_listing_events') }}
     group by listing_key
@@ -66,6 +67,8 @@ select
     e.times_listed,
     e.times_listed - 1                                                        as prior_listing_count,
     e.previous_removed_at,
+    e.previous_listing_price,
+    pl.current_price - e.previous_listing_price                               as price_change_since_previous_listing,
     date_diff('day', e.previous_removed_at, e.current_listed_at)              as days_off_market_before_listing
 from per_listing as pl
 left join events as e using (listing_key)
