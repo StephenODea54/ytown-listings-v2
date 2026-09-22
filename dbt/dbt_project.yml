@@ -11,6 +11,9 @@ clean-targets:
   - target
   - dbt_packages
 
+vars:
+  bi_export_dir: ../evidence/sources/lake
+
 models:
   ytown_listings:
     +database: lake
@@ -21,8 +24,10 @@ models:
       +schema: stg
     marts:
       +schema: marts
+      +post-hook: "{{ export_to_parquet(var('bi_export_dir')) }}"
 
 snapshots:
   ytown_listings:
     +database: lake
     +schema: marts
+    +post-hook: "{{ export_to_parquet(var('bi_export_dir')) }}"
