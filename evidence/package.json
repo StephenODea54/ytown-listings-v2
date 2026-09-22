@@ -1,6 +1,7 @@
 {
   "name": "ytown-listings-evidence",
   "version": "0.1.0",
+  "packageManager": "pnpm@10.13.1",
   "scripts": {
     "build": "evidence build",
     "build:strict": "evidence build:strict",

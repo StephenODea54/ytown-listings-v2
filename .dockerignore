@@ -1,0 +1,12 @@
+.git
+.venv
+**/node_modules
+**/__pycache__
+**/.dlt/secrets.toml
+**/.dlt/state
+**/.dlt/data
+dbt/target
+dbt/logs
+evidence/.evidence
+evidence/build
+evidence/sources/lake/*.parquet

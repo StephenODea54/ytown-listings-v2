@@ -24,12 +24,14 @@ dbt_packages/
 !.python-version
 !Dockerfile
 !LICENSE
+!Makefile
 !package.json
 !uv.lock
 
 # And filetypes
 !*.md
 !*.py
+!*.sh
 !*.sql
 !*.toml
 !*.yaml
