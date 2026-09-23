@@ -30,7 +30,3 @@ radius = 18
 [destination.filesystem]
 bucket_url = "s3://ytown-listings"
 layout = "{table_name}/{YYYY}{MM}{DD}T{HH}{mm}{ss}.{file_id}.{ext}"
-
-[destination.filesystem.credentials]
-endpoint_url = "http://localhost:9000"
-region_name = "us-east-1"
